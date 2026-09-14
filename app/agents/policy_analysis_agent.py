@@ -1,19 +1,4 @@
 """
-PolicyAnalysisAgent = PolicyComparisonAgent + MLRankingAgent, merged.
-
-WHAT CHANGED AND WHY
----------------------
-The old pipeline ran, for every candidate policy:
-  1. PolicyComparisonAgent.compare_policy()   -> rebuilds a FAISS index,
-     runs 6 similarity searches, 1 Groq call, returns narrative text.
-  2. MLRankingAgent.extract_policy_features() -> rebuilds ANOTHER FAISS
-     index from the same chunks, runs 7 similarity searches, 1 more
-     Groq call, returns structured JSON.
-
-That's 2 full re-embeddings and 2 LLM calls per policy for
-overlapping information (sum insured, hospitalization, PED waiting
-period, room rent/ICU limits all appear in both prompts).
-
 This agent:
   - Loads a PRECOMPUTED per-policy FAISS index (see
     build_policy_indexes.py) instead of re-embedding at request time.
